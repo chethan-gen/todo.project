@@ -48,12 +48,12 @@ router.patch("/:id", async(req,res)=>{
 
 //delete a todo
 
+
+// Use findByIdAndDelete for modern Mongoose
 router.delete("/:id", async(req,res)=>{
     try {
-        const todo = await Todo.findById(req.params.id);
+        const todo = await Todo.findByIdAndDelete(req.params.id);
         if(!todo) return res.status(404).json({ message: "Cannot find todo" });
-
-        await todo.remove();
         res.json({ message: "Todo deleted" });
     } catch (error) {
         res.status(500).json({ message: error.message });
