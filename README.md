@@ -36,7 +36,6 @@ A full-stack todo application built with React (frontend) and Node.js/Express (b
 2. **Install dependencies:**
    ```bash
    npm install
-   npm install --prefix frontend
    ```
 
 3. **Set up environment variables:**
@@ -53,28 +52,11 @@ A full-stack todo application built with React (frontend) and Node.js/Express (b
 ## Production Build
 
 ```bash
-npm run build
+npm install
 npm start
 ```
-
-## Deployment
-
-This project is ready for deployment on Render. See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
-
-## Project Structure
-
-```
-todo.project/
-├── backend/
-│   ├── config/
-│   ├── models/
-│   ├── routes/
-│   └── server.js
-├── frontend/
-│   ├── src/
-│   ├── public/
-│   └── dist/ (after build)
-├── package.json
-├── render.yaml
-└── DEPLOYMENT.md
+```frontend
+npm rundev
+dist
+npminstall
 ```
