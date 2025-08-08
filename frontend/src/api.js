@@ -1,7 +1,12 @@
 import axios from "axios";
 
+// Use relative URL in production, localhost in development
+const baseURL = import.meta.env.PROD
+  ? "/api/todos"
+  : "http://localhost:5000/api/todos";
+
 const API = axios.create({
-  baseURL: "http://localhost:5000/api/todos",
+  baseURL: baseURL,
 });
 
 export const fetchTodos = () => API.get("/");

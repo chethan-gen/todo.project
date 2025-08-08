@@ -2,15 +2,11 @@ services:
   - type: web
     name: todo-app
     env: node
-    buildCommand: |
-      cd frontend
-      npm install
-      npm run build
-      cd ..
-      npm install
-    startCommand: node backend/server.js
+    plan: free
+    buildCommand: npm run build
+    startCommand: npm start
     envVars:
-      - key: MONGO_URI
-        value: mongodb+srv://chaithuregala123:YssQWYtHfKTcQ8B6@cluster0.zmqjxpt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       - key: NODE_ENV
         value: production
+      - key: MONGO_URI
+        sync: false  # This will be set manually in Render dashboard
