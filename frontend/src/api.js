@@ -1,8 +1,8 @@
 import axios from "axios";
 
-// Use relative URL in production, localhost in development
+// Use deployed backend URL in production, localhost in development
 const baseURL = import.meta.env.PROD
-  ? "/api/todos"
+  ? "https://todo-project-4y9u.onrender.com/api/todos"
   : "http://localhost:5000/api/todos";
 
 const API = axios.create({
