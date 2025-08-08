@@ -101,118 +101,145 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-50 to-pink-100 flex items-center justify-center p-4">
-      <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl w-full max-w-2xl p-10 border border-gray-100">
-        <div className="mb-10 flex flex-col items-center">
-          <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-blue-500 to-pink-500 mb-2 drop-shadow-lg">Todo List</h1>
-          <p className="text-lg text-gray-500 text-center">Organize your day with style</p>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-50 to-pink-100">
+      {/* Mobile-first header */}
+      <div className="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-200 px-4 py-3 shadow-sm">
+        <div className="flex flex-col items-center">
+          <h1 className="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-blue-500 to-pink-500">
+            Todo List
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">Organize your day</p>
         </div>
-        <form onSubmit={handleAddTodo} className="flex gap-3 mb-8">
-          <input
-            className="flex-1 outline-none px-5 py-3 rounded-xl border border-gray-200 focus:border-indigo-400 text-gray-700 placeholder-gray-400 shadow-md bg-white/70"
-            type="text"
-            value={newTodo}
-            onChange={(e) => setNewTodo(e.target.value)}
-            placeholder="Add a new task..."
-            disabled={loading}
-            autoFocus
-          />
-          <button
-            type="submit"
-            className="bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-600 hover:to-pink-600 text-white px-7 py-3 rounded-xl font-bold shadow-lg transition-all duration-200"
-            disabled={loading || !newTodo.trim()}
-          >
-            Add
-          </button>
-        </form>
-        {error && <div className="text-red-500 mb-4 text-center font-semibold">{error}</div>}
-        <div className="space-y-4 max-h-[420px] overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-200 scrollbar-track-transparent">
-          {loading && <div className="text-center text-gray-400">Loading...</div>}
+      </div>
+
+      {/* Main content */}
+      <div className="px-4 py-6 pb-20">
+        {/* Add todo form - mobile optimized */}
+        <div className="mb-6">
+          <form onSubmit={handleAddTodo} className="flex flex-col sm:flex-row gap-3">
+            <input
+              className="flex-1 outline-none px-4 py-4 rounded-2xl border-2 border-gray-200 focus:border-indigo-400 text-gray-700 placeholder-gray-400 shadow-sm bg-white text-base"
+              type="text"
+              value={newTodo}
+              onChange={(e) => setNewTodo(e.target.value)}
+              placeholder="What needs to be done?"
+              disabled={loading}
+              autoFocus
+            />
+            <button
+              type="submit"
+              className="bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-600 hover:to-pink-600 active:scale-95 text-white px-6 py-4 rounded-2xl font-semibold shadow-lg transition-all duration-200 text-base"
+              disabled={loading || !newTodo.trim()}
+            >
+              {loading ? "Adding..." : "Add Task"}
+            </button>
+          </form>
+        </div>
+        {/* Error message */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-2xl mb-4 text-center font-medium">
+            {error}
+          </div>
+        )}
+
+        {/* Todo list */}
+        <div className="space-y-3">
+          {loading && (
+            <div className="text-center text-gray-400 py-8">
+              <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-500"></div>
+              <p className="mt-2">Loading...</p>
+            </div>
+          )}
           {!loading && todos.length === 0 && (
-            <div className="text-center text-gray-400">No tasks yet. Add one!</div>
+            <div className="text-center text-gray-400 py-12">
+              <div className="text-4xl mb-3">📝</div>
+              <p className="text-lg font-medium">No tasks yet</p>
+              <p className="text-sm">Add your first task above!</p>
+            </div>
           )}
           {todos.map((todo) => (
             <div
               key={todo._id}
               className={clsx(
-                "flex items-center justify-between bg-white/90 rounded-2xl px-5 py-4 shadow-md border border-gray-100 group transition-all duration-200",
-                todo.completed && "opacity-60 line-through"
+                "bg-white rounded-2xl shadow-sm border border-gray-100 transition-all duration-200 overflow-hidden",
+                todo.completed && "opacity-70"
               )}
             >
-              <div className="flex items-center gap-4 w-full">
-                <input
-                  type="checkbox"
-                  checked={todo.completed}
-                  onChange={() => handleToggle(todo._id, todo.completed)}
-                  className="accent-indigo-500 w-6 h-6 cursor-pointer"
-                  disabled={loading}
-                />
-                {editId === todo._id ? (
+              <div className="p-4">
+                <div className="flex items-start gap-3">
                   <input
-                    className="flex-1 outline-none px-3 py-2 rounded-lg border border-indigo-200 focus:border-indigo-400 text-gray-700 bg-white/80 shadow-sm"
-                    value={editText}
-                    onChange={(e) => setEditText(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') handleEditSave(todo._id);
-                      if (e.key === 'Escape') handleEditCancel();
-                    }}
-                    autoFocus
+                    type="checkbox"
+                    checked={todo.completed}
+                    onChange={() => handleToggle(todo._id, todo.completed)}
+                    className="accent-indigo-500 w-5 h-5 mt-1 cursor-pointer flex-shrink-0"
                     disabled={loading}
                   />
-                ) : (
-                  <span className="flex-1 text-xl text-gray-800 select-text cursor-pointer" onDoubleClick={() => handleEdit(todo._id, todo.text)} title="Double click to edit">
-                    {todo.text}
-                  </span>
-                )}
-              </div>
-              <div className="flex gap-2 items-center ml-2">
-                {editId === todo._id ? (
-                  <>
-                    <button
-                      onClick={() => handleEditSave(todo._id)}
-                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg font-semibold shadow transition"
-                      disabled={loading || !editText.trim()}
-                      title="Save"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                      </svg>
-                    </button>
-                    <button
-                      onClick={handleEditCancel}
-                      className="bg-gray-300 hover:bg-gray-400 text-gray-700 px-3 py-1 rounded-lg font-semibold shadow transition"
-                      disabled={loading}
-                      title="Cancel"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => handleEdit(todo._id, todo.text)}
-                      className="text-indigo-500 hover:text-indigo-700 px-2 py-1 rounded transition"
-                      disabled={loading}
-                      title="Edit"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487a2.25 2.25 0 1 1 3.182 3.182L7.5 20.213l-4 1 1-4 12.362-12.726z" />
-                      </svg>
-                    </button>
-                    <button
-                      onClick={() => handleDelete(todo._id)}
-                      className="text-red-500 hover:text-red-700 px-2 py-1 rounded transition"
-                      disabled={loading}
-                      title="Delete"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </>
-                )}
+                  <div className="flex-1 min-w-0">
+                    {editId === todo._id ? (
+                      <input
+                        className="w-full outline-none px-3 py-2 rounded-xl border-2 border-indigo-200 focus:border-indigo-400 text-gray-700 bg-white text-base"
+                        value={editText}
+                        onChange={(e) => setEditText(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleEditSave(todo._id);
+                          if (e.key === 'Escape') handleEditCancel();
+                        }}
+                        autoFocus
+                        disabled={loading}
+                      />
+                    ) : (
+                      <p
+                        className={clsx(
+                          "text-gray-800 text-base leading-relaxed break-words cursor-pointer",
+                          todo.completed && "line-through text-gray-500"
+                        )}
+                        onClick={() => handleEdit(todo._id, todo.text)}
+                        title="Tap to edit"
+                      >
+                        {todo.text}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Action buttons - mobile optimized */}
+                <div className="flex justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                  {editId === todo._id ? (
+                    <>
+                      <button
+                        onClick={() => handleEditSave(todo._id)}
+                        className="bg-green-500 hover:bg-green-600 active:scale-95 text-white px-4 py-2 rounded-xl font-medium shadow-sm transition-all duration-200 text-sm"
+                        disabled={loading || !editText.trim()}
+                      >
+                        ✓ Save
+                      </button>
+                      <button
+                        onClick={handleEditCancel}
+                        className="bg-gray-300 hover:bg-gray-400 active:scale-95 text-gray-700 px-4 py-2 rounded-xl font-medium shadow-sm transition-all duration-200 text-sm"
+                        disabled={loading}
+                      >
+                        ✕ Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => handleEdit(todo._id, todo.text)}
+                        className="text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50 active:scale-95 px-3 py-2 rounded-xl transition-all duration-200 text-sm font-medium"
+                        disabled={loading}
+                      >
+                        ✏️ Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(todo._id)}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50 active:scale-95 px-3 py-2 rounded-xl transition-all duration-200 text-sm font-medium"
+                        disabled={loading}
+                      >
+                        🗑️ Delete
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           ))}
